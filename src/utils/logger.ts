@@ -4,7 +4,7 @@ type LevelsMap = {
   [key: string]: number;
 };
 
-export const LEVELS:LevelsMap = {
+export const LEVELS: LevelsMap = {
   ERROR: 0,
   WARN: 1,
   LOG: 2,
@@ -25,4 +25,4 @@ export const logger = createConsola({
   level,
 });
 
-logger.debug('LOG_LEVEL:', logLevel);
+logger.debug('LOG_LEVEL:', { logLevel, level });

@@ -1,8 +1,18 @@
-import { makeSchema, asNexusMethod, objectType } from 'nexus';
+import { makeSchema, asNexusMethod, objectType, enumType, inputObjectType, arg } from 'nexus';
 import { DateTimeResolver } from 'graphql-scalars';
 import { Context } from './context';
 
 export const DateTime = asNexusMethod(DateTimeResolver, 'date');
+
+const SortOrder = enumType({
+  name: 'SortOrder',
+  members: ['asc', 'desc'],
+});
+
+const OrderBy = enumType({
+  name: 'OrderBy',
+  members: ['createdAt', 'updatedAt'],
+});
 
 const Todo = objectType({
   name: 'Todo',
@@ -12,11 +22,30 @@ const Todo = objectType({
     });
     t.nonNull.field('createdAt', {
       type: 'DateTime',
-      description: 'The Date and Time the todo was created',
+      description: 'DateTime the todo was created',
     });
-    t.nonNull.field('updatedAt', { type: 'DateTime' });
-    t.string('description');
-    t.nonNull.boolean('completed');
+    t.nonNull.field('updatedAt', {
+      type: 'DateTime',
+      description: 'DateTime the todo was updated',
+    });
+    t.string('description', {
+      description: 'The Todo description',
+    });
+    t.nonNull.boolean('completed', { description: 'Completed status' });
+  },
+});
+
+const TodoOrderByInput = inputObjectType({
+  name: 'TodoOrderByInput',
+  definition(t) {
+    t.field('orderBy', {
+      type: 'OrderBy',
+      description: 'Field to order the todos by',
+    });
+    t.field('sort', {
+      type: 'SortOrder',
+      description: 'Direction to order the todos by',
+    });
   },
 });
 
@@ -25,13 +54,34 @@ const Query = objectType({
   definition(t) {
     t.nonNull.list.nonNull.field('allTodos', {
       type: 'Todo',
-      resolve: (_parent, _args, context: Context) => context.prisma.todo.findMany(),
+      args: {
+        orderBy: arg({
+          type: 'OrderBy',
+        }),
+        sort: arg({
+          type: 'SortOrder',
+        }),
+      },
+      description: 'Query for all todos',
+      resolve: (_parent, args, context: Context) => {
+        const orderBy = [];
+
+        if (args?.orderBy) {
+          orderBy.push({
+            [args?.orderBy as string]: args?.sort || 'asc',
+          });
+        }
+
+        return context.prisma.todo.findMany({
+          orderBy,
+        });
+      },
     });
   },
 });
 
 export const schema = makeSchema({
-  types: [Todo, Query, DateTime],
+  types: [DateTime, OrderBy, SortOrder, TodoOrderByInput, Todo, Query],
   outputs: {
     schema: `${__dirname}/../schema.graphql`,
     typegen: `${__dirname}/generated/nexus.ts`,
