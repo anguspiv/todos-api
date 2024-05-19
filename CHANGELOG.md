@@ -1,5 +1,13 @@
 # todos-api
 
+## 1.1.0
+
+### Minor Changes
+
+- 04028d4: feat: adds the createTodo mutation
+
+  adds the createTodo to allow creation of new todos
+
 ## 1.0.0
 
 ### Major Changes
