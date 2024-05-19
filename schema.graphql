@@ -7,18 +7,42 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+enum OrderBy {
+  createdAt
+  updatedAt
+}
+
 type Query {
-  allTodos: [Todo!]!
+  """Query for all todos"""
+  allTodos(orderBy: OrderBy, sort: SortOrder): [Todo!]!
+}
+
+enum SortOrder {
+  asc
+  desc
 }
 
 type Todo {
+  """Completed status"""
   completed: Boolean!
 
-  """The Date and Time the todo was created"""
+  """DateTime the todo was created"""
   createdAt: DateTime!
+
+  """The Todo description"""
   description: String
 
   """Unique Identifier for the Todo"""
   id: String!
+
+  """DateTime the todo was updated"""
   updatedAt: DateTime!
+}
+
+input TodoOrderByInput {
+  """Field to order the todos by"""
+  orderBy: OrderBy
+
+  """Direction to order the todos by"""
+  sort: SortOrder
 }
