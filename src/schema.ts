@@ -1,8 +1,23 @@
-import { makeSchema, asNexusMethod, objectType, enumType, inputObjectType, arg } from 'nexus';
+import {
+  arg,
+  asNexusMethod,
+  enumType,
+  inputObjectType,
+  makeSchema,
+  objectType,
+  nonNull,
+} from 'nexus';
 import { DateTimeResolver } from 'graphql-scalars';
 import { Context } from './context';
 
 export const DateTime = asNexusMethod(DateTimeResolver, 'date');
+
+const TodoCreateInput = inputObjectType({
+  name: 'TodoCreateInput',
+  definition(t) {
+    t.nonNull.string('description');
+  },
+});
 
 const SortOrder = enumType({
   name: 'SortOrder',
@@ -80,8 +95,28 @@ const Query = objectType({
   },
 });
 
+const Mutation = objectType({
+  name: 'Mutation',
+  definition(t) {
+    t.field('createTodo', {
+      type: 'Todo',
+      args: {
+        data: nonNull(
+          arg({
+            type: 'TodoCreateInput',
+          }),
+        ),
+      },
+      resolve: (_, args, context: Context) =>
+        context.prisma.todo.create({
+          data: args.data,
+        }),
+    });
+  },
+});
+
 export const schema = makeSchema({
-  types: [DateTime, OrderBy, SortOrder, TodoOrderByInput, Todo, Query],
+  types: [DateTime, OrderBy, SortOrder, TodoCreateInput, TodoOrderByInput, Todo, Query, Mutation],
   outputs: {
     schema: `${__dirname}/../schema.graphql`,
     typegen: `${__dirname}/generated/nexus.ts`,

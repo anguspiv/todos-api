@@ -7,6 +7,10 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+type Mutation {
+  createTodo(data: TodoCreateInput!): Todo
+}
+
 enum OrderBy {
   createdAt
   updatedAt
@@ -37,6 +41,10 @@ type Todo {
 
   """DateTime the todo was updated"""
   updatedAt: DateTime!
+}
+
+input TodoCreateInput {
+  description: String!
 }
 
 input TodoOrderByInput {
