@@ -9,8 +9,16 @@ scalar DateTime
 
 type Mutation {
   createTodo(data: TodoCreateInput!): Todo
+  todoUpdate(
+    """Updated data for the Todo"""
+    data: TodoUpdateInput!
+
+    """id of the Todo to edit"""
+    id: String!
+  ): Todo
 }
 
+"""Field to order the Todos by"""
 enum OrderBy {
   createdAt
   updatedAt
@@ -21,13 +29,14 @@ type Query {
   allTodos(orderBy: OrderBy, sort: SortOrder): [Todo!]!
 }
 
+"""Direction to sort the Todos"""
 enum SortOrder {
   asc
   desc
 }
 
 type Todo {
-  """Completed status"""
+  """Completed status for the Todo"""
   completed: Boolean!
 
   """DateTime the todo was created"""
@@ -44,6 +53,7 @@ type Todo {
 }
 
 input TodoCreateInput {
+  """Description for the Todo"""
   description: String!
 }
 
@@ -53,4 +63,12 @@ input TodoOrderByInput {
 
   """Direction to order the todos by"""
   sort: SortOrder
+}
+
+input TodoUpdateInput {
+  """Completed status for the todo"""
+  completed: Boolean
+
+  """Description for the Todo"""
+  description: String
 }
