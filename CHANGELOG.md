@@ -1,5 +1,17 @@
 # todos-api
 
+## 1.3.0
+
+### Minor Changes
+
+- 97dd9e9: feat: adds todoById query
+
+  adds a query to select a todo by id
+
+- 97dd9e9: feat: adds delete todo mutation
+
+  Adds mutation to delete a todo by id
+
 ## 1.2.0
 
 ### Minor Changes
