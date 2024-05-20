@@ -86,6 +86,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     allTodos: NexusGenRootTypes['Todo'][]; // [Todo!]!
+    todoById: NexusGenRootTypes['Todo'] | null; // Todo
   }
   Todo: { // field return type
     completed: boolean; // Boolean!
@@ -104,6 +105,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     allTodos: 'Todo'
+    todoById: 'Todo'
   }
   Todo: { // field return type name
     completed: 'Boolean'
@@ -131,6 +133,9 @@ export interface NexusGenArgTypes {
     allTodos: { // args
       orderBy?: NexusGenEnums['OrderBy'] | null; // OrderBy
       sort?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    }
+    todoById: { // args
+      id?: string | null; // String
     }
   }
 }
