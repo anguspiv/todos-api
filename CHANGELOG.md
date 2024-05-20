@@ -1,5 +1,14 @@
 # todos-api
 
+## 1.2.0
+
+### Minor Changes
+
+- 608144f: feat: adds todo edit mutation
+
+  Adds the EditTodo mutation to allow user
+  to update the Todo fields
+
 ## 1.1.0
 
 ### Minor Changes
