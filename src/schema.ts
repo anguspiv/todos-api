@@ -105,9 +105,27 @@ const Query = objectType({
         }
 
         return context.prisma.todo.findMany({
-          orderBy,
+          orderBy: [
+            {
+              completed: 'asc',
+            },
+            ...orderBy,
+          ],
         });
       },
+    });
+
+    t.nullable.field('todoById', {
+      type: 'Todo',
+      args: {
+        id: stringArg({
+          description: 'id of the Todo',
+        }),
+      },
+      resolve: (_parent, args, context: Context) =>
+        context.prisma.todo.findUnique({
+          where: { id: args.id || undefined },
+        }),
     });
   },
 });

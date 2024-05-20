@@ -31,6 +31,10 @@ enum OrderBy {
 type Query {
   """Query for all todos"""
   allTodos(orderBy: OrderBy, sort: SortOrder): [Todo!]!
+  todoById(
+    """id of the Todo"""
+    id: String
+  ): Todo
 }
 
 """Direction to sort the Todos"""
