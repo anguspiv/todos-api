@@ -81,7 +81,8 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
     createTodo: NexusGenRootTypes['Todo'] | null; // Todo
-    todoUpdate: NexusGenRootTypes['Todo'] | null; // Todo
+    deleteTodo: NexusGenRootTypes['Todo'] | null; // Todo
+    updateTodo: NexusGenRootTypes['Todo'] | null; // Todo
   }
   Query: { // field return type
     allTodos: NexusGenRootTypes['Todo'][]; // [Todo!]!
@@ -98,7 +99,8 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     createTodo: 'Todo'
-    todoUpdate: 'Todo'
+    deleteTodo: 'Todo'
+    updateTodo: 'Todo'
   }
   Query: { // field return type name
     allTodos: 'Todo'
@@ -117,7 +119,10 @@ export interface NexusGenArgTypes {
     createTodo: { // args
       data: NexusGenInputs['TodoCreateInput']; // TodoCreateInput!
     }
-    todoUpdate: { // args
+    deleteTodo: { // args
+      id: string; // String!
+    }
+    updateTodo: { // args
       data: NexusGenInputs['TodoUpdateInput']; // TodoUpdateInput!
       id: string; // String!
     }

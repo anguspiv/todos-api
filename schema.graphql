@@ -9,7 +9,11 @@ scalar DateTime
 
 type Mutation {
   createTodo(data: TodoCreateInput!): Todo
-  todoUpdate(
+  deleteTodo(
+    """id of the todo to delete"""
+    id: String!
+  ): Todo
+  updateTodo(
     """Updated data for the Todo"""
     data: TodoUpdateInput!
 

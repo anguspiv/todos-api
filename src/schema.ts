@@ -130,7 +130,7 @@ const Mutation = objectType({
         }),
     });
 
-    t.field('todoUpdate', {
+    t.field('updateTodo', {
       type: 'Todo',
       args: {
         id: nonNull(
@@ -160,6 +160,21 @@ const Mutation = objectType({
           throw new Error(`Todo with ID ${args.id} does not exist in the database`);
         }
       },
+    });
+
+    t.field('deleteTodo', {
+      type: 'Todo',
+      args: {
+        id: nonNull(
+          stringArg({
+            description: 'id of the todo to delete',
+          }),
+        ),
+      },
+      resolve: (_, args, context: Context) =>
+        context.prisma.todo.delete({
+          where: { id: args.id },
+        }),
     });
   },
 });
