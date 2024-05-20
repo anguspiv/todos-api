@@ -36,6 +36,10 @@ export interface NexusGenInputs {
     orderBy?: NexusGenEnums['OrderBy'] | null; // OrderBy
     sort?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
+  TodoUpdateInput: { // input type
+    completed?: boolean | null; // Boolean
+    description?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -77,6 +81,7 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
     createTodo: NexusGenRootTypes['Todo'] | null; // Todo
+    todoUpdate: NexusGenRootTypes['Todo'] | null; // Todo
   }
   Query: { // field return type
     allTodos: NexusGenRootTypes['Todo'][]; // [Todo!]!
@@ -93,6 +98,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     createTodo: 'Todo'
+    todoUpdate: 'Todo'
   }
   Query: { // field return type name
     allTodos: 'Todo'
@@ -110,6 +116,10 @@ export interface NexusGenArgTypes {
   Mutation: {
     createTodo: { // args
       data: NexusGenInputs['TodoCreateInput']; // TodoCreateInput!
+    }
+    todoUpdate: { // args
+      data: NexusGenInputs['TodoUpdateInput']; // TodoUpdateInput!
+      id: string; // String!
     }
   }
   Query: {

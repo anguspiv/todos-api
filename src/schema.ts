@@ -6,6 +6,7 @@ import {
   makeSchema,
   objectType,
   nonNull,
+  stringArg,
 } from 'nexus';
 import { DateTimeResolver } from 'graphql-scalars';
 import { Context } from './context';
@@ -15,18 +16,34 @@ export const DateTime = asNexusMethod(DateTimeResolver, 'date');
 const TodoCreateInput = inputObjectType({
   name: 'TodoCreateInput',
   definition(t) {
-    t.nonNull.string('description');
+    t.nonNull.string('description', {
+      description: 'Description for the Todo',
+    });
+  },
+});
+
+const TodoUpdateInput = inputObjectType({
+  name: 'TodoUpdateInput',
+  definition(t) {
+    t.string('description', {
+      description: 'Description for the Todo',
+    });
+    t.boolean('completed', {
+      description: 'Completed status for the todo',
+    });
   },
 });
 
 const SortOrder = enumType({
   name: 'SortOrder',
   members: ['asc', 'desc'],
+  description: 'Direction to sort the Todos',
 });
 
 const OrderBy = enumType({
   name: 'OrderBy',
   members: ['createdAt', 'updatedAt'],
+  description: 'Field to order the Todos by',
 });
 
 const Todo = objectType({
@@ -46,7 +63,7 @@ const Todo = objectType({
     t.string('description', {
       description: 'The Todo description',
     });
-    t.nonNull.boolean('completed', { description: 'Completed status' });
+    t.nonNull.boolean('completed', { description: 'Completed status for the Todo' });
   },
 });
 
@@ -112,11 +129,53 @@ const Mutation = objectType({
           data: args.data,
         }),
     });
+
+    t.field('todoUpdate', {
+      type: 'Todo',
+      args: {
+        id: nonNull(
+          stringArg({
+            description: 'id of the Todo to edit',
+          }),
+        ),
+        data: nonNull(
+          arg({
+            type: 'TodoUpdateInput',
+            description: 'Updated data for the Todo',
+          }),
+        ),
+      },
+      resolve: async (_, args, context: Context) => {
+        try {
+          const todo = await context.prisma.todo.update({
+            where: { id: args.id || undefined },
+            data: {
+              completed: args.data?.completed || undefined,
+              description: args.data?.description || undefined,
+            },
+          });
+
+          return todo;
+        } catch (err) {
+          throw new Error(`Todo with ID ${args.id} does not exist in the database`);
+        }
+      },
+    });
   },
 });
 
 export const schema = makeSchema({
-  types: [DateTime, OrderBy, SortOrder, TodoCreateInput, TodoOrderByInput, Todo, Query, Mutation],
+  types: [
+    DateTime,
+    OrderBy,
+    SortOrder,
+    TodoCreateInput,
+    TodoOrderByInput,
+    TodoUpdateInput,
+    Todo,
+    Query,
+    Mutation,
+  ],
   outputs: {
     schema: `${__dirname}/../schema.graphql`,
     typegen: `${__dirname}/generated/nexus.ts`,
