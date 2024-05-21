@@ -34,6 +34,34 @@ const TodoUpdateInput = inputObjectType({
   },
 });
 
+const TodoFilterInput = inputObjectType({
+  name: 'TodoFilterInput',
+  definition(t) {
+    t.string('query', {
+      description: 'Query to filter the todos by',
+    });
+    t.boolean('completed', {
+      description: 'Filter the todos by completed status',
+    });
+    t.field('startDateTime', {
+      type: 'DateTime',
+      description: 'Created Start DateTime to filter the todos by',
+    });
+    t.field('endDateTime', {
+      type: 'DateTime',
+      description: 'Created End DateTime to filter the todos by',
+    });
+    t.field('orderBy', {
+      type: 'OrderBy',
+      description: 'Field to order the todos by',
+    });
+    t.field('sort', {
+      type: 'SortOrder',
+      description: 'Direction to order the todos by',
+    });
+  },
+});
+
 const SortOrder = enumType({
   name: 'SortOrder',
   members: ['asc', 'desc'],
@@ -42,7 +70,7 @@ const SortOrder = enumType({
 
 const OrderBy = enumType({
   name: 'OrderBy',
-  members: ['createdAt', 'updatedAt'],
+  members: ['createdAt', 'updatedAt', 'description'],
   description: 'Field to order the Todos by',
 });
 
@@ -105,6 +133,48 @@ const Query = objectType({
         }
 
         return context.prisma.todo.findMany({
+          orderBy: [
+            {
+              completed: 'asc',
+            },
+            ...orderBy,
+          ],
+        });
+      },
+    });
+
+    t.nonNull.list.field('filterTodos', {
+      type: 'Todo',
+      args: {
+        data: arg({
+          type: 'TodoFilterInput',
+        }),
+      },
+      description: 'Query for todos with filters',
+      resolve: (_parent, args, context: Context) => {
+        const orderBy = [];
+
+        if (args?.data?.orderBy) {
+          orderBy.push({
+            [args?.data?.orderBy as string]: args?.data?.sort || 'asc',
+          });
+        }
+
+        const completed = args.data?.completed !== undefined ? !!args.data?.completed : undefined;
+
+        return context.prisma.todo.findMany({
+          where: {
+            description: {
+              contains: args.data?.query || undefined,
+            },
+            completed: {
+              equals: completed,
+            },
+            createdAt: {
+              gte: args.data?.startDateTime || undefined,
+              lte: args.data?.endDateTime || undefined,
+            },
+          },
           orderBy: [
             {
               completed: 'asc',
@@ -205,6 +275,7 @@ export const schema = makeSchema({
     TodoCreateInput,
     TodoOrderByInput,
     TodoUpdateInput,
+    TodoFilterInput,
     Todo,
     Query,
     Mutation,
