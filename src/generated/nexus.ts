@@ -32,6 +32,14 @@ export interface NexusGenInputs {
   TodoCreateInput: { // input type
     description: string; // String!
   }
+  TodoFilterInput: { // input type
+    completed?: boolean | null; // Boolean
+    endDateTime?: NexusGenScalars['DateTime'] | null; // DateTime
+    orderBy?: NexusGenEnums['OrderBy'] | null; // OrderBy
+    query?: string | null; // String
+    sort?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    startDateTime?: NexusGenScalars['DateTime'] | null; // DateTime
+  }
   TodoOrderByInput: { // input type
     orderBy?: NexusGenEnums['OrderBy'] | null; // OrderBy
     sort?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -43,7 +51,7 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  OrderBy: "createdAt" | "updatedAt"
+  OrderBy: "createdAt" | "description" | "updatedAt"
   SortOrder: "asc" | "desc"
 }
 
@@ -86,6 +94,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     allTodos: NexusGenRootTypes['Todo'][]; // [Todo!]!
+    filterTodos: Array<NexusGenRootTypes['Todo'] | null>; // [Todo]!
     todoById: NexusGenRootTypes['Todo'] | null; // Todo
   }
   Todo: { // field return type
@@ -105,6 +114,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     allTodos: 'Todo'
+    filterTodos: 'Todo'
     todoById: 'Todo'
   }
   Todo: { // field return type name
@@ -133,6 +143,9 @@ export interface NexusGenArgTypes {
     allTodos: { // args
       orderBy?: NexusGenEnums['OrderBy'] | null; // OrderBy
       sort?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    }
+    filterTodos: { // args
+      data?: NexusGenInputs['TodoFilterInput'] | null; // TodoFilterInput
     }
     todoById: { // args
       id?: string | null; // String

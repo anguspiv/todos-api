@@ -25,12 +25,16 @@ type Mutation {
 """Field to order the Todos by"""
 enum OrderBy {
   createdAt
+  description
   updatedAt
 }
 
 type Query {
   """Query for all todos"""
   allTodos(orderBy: OrderBy, sort: SortOrder): [Todo!]!
+
+  """Query for todos with filters"""
+  filterTodos(data: TodoFilterInput): [Todo]!
   todoById(
     """id of the Todo"""
     id: String
@@ -63,6 +67,26 @@ type Todo {
 input TodoCreateInput {
   """Description for the Todo"""
   description: String!
+}
+
+input TodoFilterInput {
+  """Filter the todos by completed status"""
+  completed: Boolean
+
+  """Created End DateTime to filter the todos by"""
+  endDateTime: DateTime
+
+  """Field to order the todos by"""
+  orderBy: OrderBy
+
+  """Query to filter the todos by"""
+  query: String
+
+  """Direction to order the todos by"""
+  sort: SortOrder
+
+  """Created Start DateTime to filter the todos by"""
+  startDateTime: DateTime
 }
 
 input TodoOrderByInput {
