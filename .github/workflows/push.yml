@@ -1,4 +1,8 @@
 name: Push
+# https://docs.github.com/en/actions/learn-github-actions/variables
+
+env:
+  HUSKY: 0
 
 on: push
 
