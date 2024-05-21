@@ -1,5 +1,14 @@
 # todos-api
 
+## 1.4.0
+
+### Minor Changes
+
+- f37cf1b: feat: adds the filterTodos query
+
+  Adds the filterTodos query allowing users to search for todos by
+  description, completed, createdAt
+
 ## 1.3.0
 
 ### Minor Changes
